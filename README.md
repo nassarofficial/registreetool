@@ -16,6 +16,7 @@ For the paper, and dataset check https://www.registree.ethz.ch/index.html.
 ### MongoDB Structure:
 #### Users:
 To add a user to the tool, insert a document with the following json:
+```
 {
     "_id": {
         "$oid": "5aeaf393060a2f0f839aa62c"
@@ -23,3 +24,4 @@ To add a user to the tool, insert a document with the following json:
     "user": "admin",
     "pass": "admin"
 }
+ ```
