@@ -5,7 +5,7 @@ For the paper, and dataset check https://www.registree.ethz.ch/index.html.
 ## Usage:
    1. Clone the repository 
    ```
-   git clone https://github.com/nassarofficial/RegisTree-Annotation-Tool && cd polyrnn
+   git clone https://github.com/nassarofficial/RegisTree-Annotation-Tool && cd registreetool
    ```
    2. Install pip packages or dependencies   
    ```
