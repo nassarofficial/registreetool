@@ -13,7 +13,9 @@ For the paper, and dataset check https://www.registree.ethz.ch/index.html.
    source env/bin/activate
    pip install -r requirements.txt
    ```
-### MongoDB Structure:
+   2. Download and upload/insert the mongodb dump file to any mongodb of your choosing:
+   
+### Adding a User:
 #### Users:
 To add a user to the tool, insert a document with the following json:
 ```
@@ -25,3 +27,4 @@ To add a user to the tool, insert a document with the following json:
     "pass": "admin"
 }
  ```
+If you use the tool or its code, please cite:
