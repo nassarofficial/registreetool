@@ -1,4 +1,4 @@
-# RegisTree Annotation Tool (ICCV 2019)
+# Street View Annotation Too
 This is the official repo for Registree's Annotational Tool presented in "Name of Paper".
 For the paper, and dataset check https://www.registree.ethz.ch/index.html. 
 
