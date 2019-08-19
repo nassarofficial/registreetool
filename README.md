@@ -1,5 +1,5 @@
 # Multi Street View Annotation Tool
-This is the official repo for Registree's Annotational Tool presented in "Simultaneous multi-view instance detection with learned geometric soft-constraints".
+This is the official repo for Registree's Annotational Tool presented in "Simultaneous multi-view instance detection with learned geometric soft-constraints" accepted for ICCV 2019.
 For the paper, and dataset check https://www.registree.ethz.ch/index.html. 
 
 ## Usage:
