@@ -17,6 +17,9 @@ Full instructions still in progress.
    ```
    2. Download and upload/insert the mongodb dump file to any mongodb of your choosing:
    
+   3. Download tree detection model from [here](https://drive.google.com/open?id=16YGSj92Hl_XvKpDAUl7Y9FiNtmZw2Ts7). 
+   
+## Mongo Setup
 ### Adding a User:
 #### Users:
 To add a user to the tool, insert a document with the following json:
