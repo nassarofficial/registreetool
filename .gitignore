@@ -1,2 +1,6 @@
 
 __pycache__/
+
+lib/build/temp\.linux-x86_64-3\.7/nms/
+
+*.pt
