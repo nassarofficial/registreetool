@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ t + " | " + h}}</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="toolbar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">MOAT</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">{{ label }}</a>
+                    </li>
+            </div>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-md-4" id="numoftrees" type="search" placeholder="Progress">
+            </form>
+
+        </nav>
+    </div>
+    <div id="map"></div>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdriDfDAzzueGRCUvTPHTUs85Zo4LQFMI"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
+    <script>
+        var map;
+        var markers = new Array();
+        var newmarkers = new Array();
+        var counteroftrees = 10;
+        var datas = JSON.parse('{{ data | tojson | safe}}');
+        var center = JSON.parse('{{ center | tojson | safe}}');
+        console.log(center)
+        var markerdata = []
+        var markerCluster = null;
+        function post(path, params, method) {
+            method = method || "post"; 
+            var form = document.createElement("form");
+            form.setAttribute("method", method);
+            form.setAttribute("action", path);
+
+            for(var key in params) {
+                if(params.hasOwnProperty(key)) {
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", key);
+                    hiddenField.setAttribute("value", params[key]);
+
+                    form.appendChild(hiddenField);
+                }
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function reload(markers_ls)
+        {
+            markers = new Array();
+            for (i = 0; i < markers_ls.length; i++) {
+                markers.push(markers_ls[i]);
+
+            }
+            document.getElementById("numoftrees").value = "Loaded";
+
+            markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclausterer/m', maxZoom: 18,gridSize: 500, minimumClusterSize: 5});
+
+        }
+
+        function reloadmarkers(data)
+        {
+            if (markerCluster) {
+                markerCluster.clearMarkers();
+            }
+            markers = new Array();
+            for (i = 0; i < data.length; i++) {
+                icon_mark = '{{url_for('static', filename='tree-icon.png')}}'
+                
+                if ('annotated' in data[i]){
+                    icon_mark = '{{url_for('static', filename='tree-icon-false-positive.png')}}'
+                }
+                else{
+                    icon_mark = '{{url_for('static', filename='tree-icon.png')}}'
+                }
+                var marker = new google.maps.Marker({
+                    title: JSON.stringify({"_id":data[i]['_id'],"o_id":i}),
+                    position: new google.maps.LatLng(data[i]['location']['coordinates'][1], data[i]['location']['coordinates'][0]),
+                    draggable: true,
+                    icon: icon_mark
+                });
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    id = this.getTitle()
+                    id = JSON.parse(id)
+                    lat = this.getPosition().lat();
+                    lng = this.getPosition().lng();
+                    idd = id['_id']
+                    $.ajax({
+                        type: 'POST',
+                        url:'/UpdateMarker',
+                        type:'post',
+                        data: JSON.stringify({"id":idd,"lat":lat,"lng": lng}),
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        success:function(data){
+                            var resp = data['response'];
+                            if (resp == "success")
+                            {
+
+                                document.getElementById("numoftrees").value = "Marker Updated";
+                            } else {
+                                document.getElementById("numoftrees").value = "Marker Update Failed";
+                            }
+                        }
+                    });
+
+                })
+                google.maps.event.addListener(marker, 'click', function() {
+                    id = this.getTitle()
+                    id = JSON.parse(id)
+                    idd = id['_id']
+                    lat = this.getPosition().lat();
+                    lng = this.getPosition().lng();
+                    post('/AnnotateMarkers', {id: idd,lat: lat, lng: lng});
+                })
+
+                google.maps.event.addListener(marker, "rightclick", function () { 
+                    id = this.getTitle(); 
+                    delMarker(id)
+                });
+
+                markers.push(marker);
+
+            }
+            document.getElementById("numoftrees").value = "Loaded";
+
+            markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m', maxZoom: 18,gridSize: 50, minimumClusterSize: 25});
+
+        }
+
+    function delMarker(id){
+        id = JSON.parse(id);
+
+        idd = id['o_id'];
+        markers[idd].setVisible(false);
+        markers[idd] = null;
+
+        $.ajax({
+            type: 'POST',
+            url:'/DeleteMarker',
+            type:'post',
+            data: JSON.stringify({"id":id['_id']}),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success:function(data){
+                var resp = data['response'];
+                if (resp == "success")
+                {
+                    document.getElementById("numoftrees").value = "Marker Deleted";
+                } else {
+                    document.getElementById("numoftrees").value = "Marker Deletion Failed";
+                }
+            }
+        });
+            $.ajax({
+                type: 'POST',
+                url:'/GetBoundsMarkers',
+                type:'post',
+                data: JSON.stringify(map.getBounds()),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success:function(data){
+                    markerdata = []
+                    markerdata = data['response'];
+                    reloadmarkers(markerdata);
+                }
+            });
+    }
+
+    function addMarker(location) {
+        var newmarker = new google.maps.Marker({
+          position: location,
+          map: map,
+          icon: '{{url_for('static', filename='tree-icon.png')}}',
+          draggable: true
+
+        });
+        markers.push(newmarker);
+        lat = newmarker.getPosition().lat();
+        lng = newmarker.getPosition().lng();
+
+        $.ajax({
+            type: 'POST',
+            url:'/NewMarker',
+            type:'post',
+            data: JSON.stringify({"lat":lat,"lng": lng}),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success:function(data){
+                resp = data['response'];
+                if (resp == "success")
+                {
+                    document.getElementById("numoftrees").value = "Marker New";
+                } else {
+                    document.getElementById("numoftrees").value = "Marker Update Failed";
+                }
+            }
+        });
+
+      }
+        if (center["status"] == "None")
+        {
+
+            map = new google.maps.Map(document.getElementById('map'), {
+            mapTypeId: 'satellite',
+            zoom: 20,
+            tilt:0,
+            center: {
+                lat: datas[0]['location']['coordinates'][1],
+                lng: datas[0]['location']['coordinates'][0]
+                }
+             });
+        }
+        else {
+            console.log(center)
+            map = new google.maps.Map(document.getElementById('map'), {
+            mapTypeId: 'satellite',
+            zoom: 20,
+            tilt:0,
+            center: {
+                lat: parseFloat(center['lat']),
+                lng: parseFloat(center['lng'])
+                }
+             });  
+
+
+
+          }
+
+        google.maps.event.addListener(map, 'idle', function() {
+
+            $.ajax({
+                type: 'POST',
+                url:'/GetBoundsMarkers',
+                type:'post',
+                data: JSON.stringify(map.getBounds()),
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                success:function(data){
+                    markerdata = []
+                    markerdata = data['response'];
+                    reloadmarkers(markerdata);
+                }
+            });
+        });
+   
+        map.addListener('click', function(event) {
+          addMarker(event.latLng);
+        });
+
+
+    </script>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+</html>

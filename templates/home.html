@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>{{ t + " | " + h}}</title>
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+      <meta charset="utf-8">
+      <style>
+         /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+         #map {
+         height: 100%;
+         }
+         /* Optional: Makes the sample page fill the window. */
+         html, body {
+         height: 100%;
+         margin: 0;
+         padding: 0;
+         }
+      </style>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   </head>
+   <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1 class="display-4">Multi-view Object Annotation Tool (MOAT)</h1>
+        <p class="lead">Pick the step you would like to proceed with:</p>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg btn-block" onclick="location.href = '/ViewCreateDataset';">Create Dataset</button>
+      <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="location.href = '/LoadMarkers';">Load Dataset</button>
+<!--       {% block content %}
+          {% if userrole == "admin" %}
+              <button type="button" class="btn btn-warning btn-lg btn-block" onclick="location.href = '/Settings';">Settings</button>
+          {% else %}
+               <div></div>
+          {% endif %}
+      {% endblock content %}
+ -->
+      <button type="button" class="btn btn-danger btn-secondary btn-lg btn-block" onclick="location.href = '/logout';">Log Out</button>
+    </div>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   </body>
+</html>
+

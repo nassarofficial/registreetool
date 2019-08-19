@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ t + " | Object ID: " + h}}</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="toolbar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">AnnotationTool</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Label StreetView</a>
+                    </li>
+            </div>
+        </nav>
+    </div>
+    </br>
+    </br>
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+<!--                 <button type="button" class="btn btn-secondary btn-sm" onclick="location.href = '/Refresh';">Refresh</button>
+ -->                <button type="button" class="btn btn-success btn-sm" onclick="location.href = '/NextTree';">Shuffle</button>
+                <button type="button" class="btn btn-alert btn-sm" onclick="gobackandload();">Back</button>
+
+            </div>
+            <div id="treeid" class="col-8">
+                Object ID
+            </div>
+            <div class="col">
+                <button type="button" id="savingbutton" class="btn btn-warning btn-sm">Save</button>
+            </div>
+        </div>
+        </br>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" class="btn btn-primary" disabled>
+                              1
+                            </button>
+
+                          <button type="button" id="PolygonButton1" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-draw-polygon"></i> Polygon</button>
+                          <button type="button" id="BoxButton1" class="btn btn-secondary" aria-disabled="false"> <i class="far fa-square"></i></span> Box</button>
+                          <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-tags"></i>
+                              Class
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="classes_1" name="classes_1">
+                            </div>
+                          </div>
+
+                          <button type="button" id="deleteObject_1" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-trash-alt"></i> Remove</button>
+                          <button type="button" id="targetObject_1" class="btn btn-secondary" aria-disabled="false"><i class="far fa-dot-circle"></i> Set Target</button>
+
+                          <input type="text" class="form-control" id="att_1" placeholder="Attribute 1">
+                        </div>
+
+
+                        <div class="alert alert-success" id="treesuccess" role="alert">
+                          Success! Tree annotated
+                        </div>
+                        <div class="alert alert-danger" id="treefail" role="alert">
+                          Failure to update Tree Annotation
+                        </div>
+                        <div class="alert alert-danger" id="nopanoramas" role="alert">
+                          No available panoramas
+                        </div>
+
+                        <canvas id="myCanvas" style="border:1px solid #000000;"></canvas>
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" class="btn btn-primary" disabled>
+                              2
+                            </button>
+
+                          <button type="button" id="PolygonButton2" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-draw-polygon"></i> Polygon</button>
+                          <button type="button" id="BoxButton2" class="btn btn-secondary" aria-disabled="false"> <i class="far fa-square"></i></span> Box</button>
+                          <div class="btn-group" role="group">
+                            <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-tags"></i>
+                              Class
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" id="classes_2" name="classes_2">
+                            </div>
+                          </div>
+
+                          <button type="button" id="deleteObject_2" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-trash-alt"></i> Remove</button>
+                          <button type="button" id="targetObject_2" class="btn btn-secondary" aria-disabled="false"><i class="far fa-dot-circle"></i> Set Target</button>
+
+                          <input type="text" class="form-control" id="att_2" placeholder="Attribute 2">
+                        </div>
+
+                        <canvas id="myCanvas_1" style="border:1px solid #000000;"></canvas>
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button type="button" class="btn btn-primary" disabled>
+                              3
+                            </button>
+
+                          <button type="button" id="PolygonButton3" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-draw-polygon"></i> Polygon</button>
+                          <button type="button" id="BoxButton3" class="btn btn-secondary" aria-disabled="false"> <i class="far fa-square"></i></span> Box</button>
+                          <div class="btn-group" role="group">
+                            <button id="btnGroupDrop3" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-tags"></i>
+                              Class
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop3" id="classes_3" name="classes_3">
+                            </div>
+                          </div>
+
+                          <button type="button" id="deleteObject_3" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-trash-alt"></i> Remove</button>
+                          <button type="button" id="targetObject_3" class="btn btn-secondary" aria-disabled="false"><i class="far fa-dot-circle"></i> Set Target</button>
+
+                          <input type="text" class="form-control" id="att_3" placeholder="Attribute 3">
+                        </div>
+                        <canvas id="myCanvas_2" style="border:1px solid #000000;"></canvas>
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <button type="button" class="btn btn-primary" disabled>
+                              4
+                            </button>
+
+                          <button type="button" id="PolygonButton4" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-draw-polygon"></i> Polygon</button>
+                          <button type="button" id="BoxButton4" class="btn btn-secondary" aria-disabled="false"> <i class="far fa-square"></i></span> Box</button>
+                          <div class="btn-group" role="group">
+                            <button id="btnGroupDrop4" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-tags"></i>
+                              Class
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" id="classes_4" name="classes_4">
+                            </div>
+                          </div>
+
+                          <button type="button" id="deleteObject_4" class="btn btn-secondary" aria-disabled="false"><i class="fas fa-trash-alt"></i> Remove</button>
+                          <button type="button" id="targetObject_4" class="btn btn-secondary" aria-disabled="false"><i class="far fa-dot-circle"></i> Set Target</button>
+
+                          <input type="text" class="form-control" id="att_4" placeholder="Attribute 4">
+                        </div>
+                        <canvas id="myCanvas_3" style="border:1px solid #000000;"></canvas>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/d27441c181.js"></script>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='fabric.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.redirect.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+var canvas = document.getElementById('myCanvas');
+var canvas1 = document.getElementById('myCanvas_1');
+var canvas2 = document.getElementById('myCanvas_2');
+var canvas3 = document.getElementById('myCanvas_3');
+
+fitToContainer(canvas)
+fitToContainer(canvas1)
+fitToContainer(canvas2)
+fitToContainer(canvas3)
+$('#treesuccess').hide()
+$('#treefail').hide()
+$('#nopanoramas').hide()
+
+
+$(document).ready(function() {
+    for (index in classes_list) {
+        $('#classes_1').append('<a class="dropdown-item class_1_item" value=' + index + '>' + index + ' - ' + classes_list[index]['name'] + '</a>');
+        $('#classes_2').append('<a class="dropdown-item class_2_item" value=' + index + '>' + index + ' - ' + classes_list[index]['name'] + '</a>');
+        $('#classes_3').append('<a class="dropdown-item class_3_item" value=' + index + '>' + index + ' - ' + classes_list[index]['name'] + '</a>');
+        $('#classes_4').append('<a class="dropdown-item class_4_item" value=' + index + '>' + index + ' - ' + classes_list[index]['name'] + '</a>');
+
+    }
+});
+
+$(document).ready(function() {
+    $("#deleteObject_1").click(function() {
+        canvas_1.remove(canvas_1.getActiveObject());
+    });
+});
+$(document).ready(function() {
+    $("#deleteObject_2").click(function() {
+        canvas_2.remove(canvas_2.getActiveObject());
+    });
+});
+$(document).ready(function() {
+    $("#deleteObject_3").click(function() {
+        canvas_3.remove(canvas_3.getActiveObject());
+    });
+});
+$(document).ready(function() {
+    $("#deleteObject_4").click(function() {
+        canvas_4.remove(canvas_4.getActiveObject());
+    });
+});
+
+
+
+
+$(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
+
+var data = JSON.parse('{{ data | tojson | safe}}');
+var treeid = JSON.parse('{{ tree_id | tojson | safe}}');
+var treemain = JSON.parse('{{ tree | tojson | safe}}');
+var classes_list = JSON.parse('{{ classes | tojson | safe}}');
+
+var classes = {
+    0: ["tree", "rgb(128,255,0)"],
+    1: ["street-signs", "rgb(255,128,0)"],
+    2: ["car", "rgb(0,128,255)"]
+}
+
+var tarp = [data[0]['x'], data[0]['y']]
+var tarp1 = [data[1]['x'], data[1]['y']]
+var tarp2 = [data[2]['x'], data[2]['y']]
+var tarp3 = [data[3]['x'], data[3]['y']]
+
+var pano_1 = data[0]['pano_details']
+var pano_2 = data[1]['pano_details']
+var pano_3 = data[2]['pano_details']
+var pano_4 = data[3]['pano_details']
+
+var num_x, num_y, tile_width, tile_height;
+var c_width = canvas.scrollWidth;
+var c_height = canvas.scrollHeight;
+
+vals = get_tiles_num(pano_1, 2)
+num_x = vals[0];
+num_y = vals[1];
+tile_width = vals[2];
+tile_height = vals[3];
+
+var imgs = [];
+var imgs1 = [];
+var imgs2 = [];
+var imgs3 = [];
+
+var totwidth = (c_width / (Math.ceil(num_x * tile_width)));
+var totheight = (c_height / Math.ceil(num_y * tile_height));
+var res_tile_width = parseInt(totwidth * tile_width);
+var res_tile_height = parseInt(totheight * tile_height);
+
+var max_zoom = parseInt(pano_1['Location']['zoomLevels']);
+var down = parseInt(Math.pow(2, max_zoom - 2));
+var image_width = parseInt(pano_1['Data']['image_width']);
+var image_height = parseInt(pano_1['Data']['image_height']);
+var mau_x = c_width / (image_width);
+var mau_y = c_height / (image_height + 192);
+var zoom = "2";
+
+var startDrawingPolygon;
+var fillColor = "rgba(46, 240, 56, 0.5)";
+var polygonMode = false;
+var pointArray = new Array();
+var boxMode = false;
+
+var lineArray = new Array();
+var activeLine;
+var activeShape = false;
+var selectedObjectID_1 = null;
+var selectedObjectID_2 = null;
+var selectedObjectID_3 = null;
+var selectedObjectID_4 = null;
+
+var max_zoom = parseInt(pano_1['Location']['zoomLevels']);
+var down = parseInt(Math.pow(2, max_zoom - 2));
+var image_width = parseInt(pano_1['Data']['image_width']);
+var image_height = parseInt(pano_1['Data']['image_height']);
+
+var mau_x = c_width / (image_width);
+var mau_y = c_height / (image_height + 192);
+var zoom = "2";
+
+var max = -99
+var min = -99
+function Addpolygon() {
+    startDrawingPolygon = true;
+    polygonMode = true;
+    prototypefabric.polygon.drawPolygon();
+}
+
+function Addbox() {
+    startDrawingPolygon = true;
+    boxMode = true;
+}
+
+for (i = 1; i < 5; i++) {
+
+    document.getElementById("PolygonButton" + i).onclick = function() {
+        Addpolygon()
+        document.getElementById("PolygonButton" + i).setAttribute("aria-disabled", "true");
+    };
+
+}
+
+BoxButton1.onclick = function() {
+    Addbox()
+};
+BoxButton2.onclick = function() {
+    Addbox()
+};
+BoxButton3.onclick = function() {
+    Addbox()
+};
+BoxButton4.onclick = function() {
+    Addbox()
+};
+
+
+document.getElementById("treeid").innerHTML = "<span class='badge badge-success'>Object ID:</span> " + treeid[0]["id"]
+function gobackandload()
+{
+        // console.log({'lat': data[0]['lat'], 'lng': data[0]['lng']})
+        // $.ajax({
+        // type:'POST',
+        // url:"/ContinueMarker",
+        // data:['lat': data[0]['lat'], 'lng': data[0]['lng']],
+        // dataType: 'json',
+        // success: function(i){
+        //     location.href='/ContinueMarker';
+        // }
+        // });
+        $.redirect('/ContinueMarker', {'lat': data[0]['lat'], 'lng': data[0]['lng']});
+
+}
+
+function fitToContainer(cv) {
+    // Make it visually fill the positioned parent
+    cv.style.width = '100%';
+    cv.style.height = '350px';
+    cv.width = canvas.offsetWidth;
+    cv.height = canvas.offsetHeight;
+}
+
+function remove_array_element(array, n) {
+    var index = array.indexOf(n);
+    if (index > -1) {
+        array.splice(index, 1);
+    }
+    return array;
+}
+
+function get_tiles_num(pano, zoom) {
+    var max_zoom = parseInt(pano['Location']['zoomLevels']);
+    var down = parseInt(Math.pow(2, max_zoom - zoom));
+    var image_width = parseInt(pano['Data']['image_width']) / down;
+    var image_height = parseInt(pano['Data']['image_height']) / down;
+    var tile_width = parseInt(pano['Data']['tile_width']);
+    var tile_height = parseInt(pano['Data']['tile_height']);
+    var num_x = parseInt(Math.ceil(image_width / parseFloat(tile_width)));
+    var num_y = parseInt(Math.ceil(image_height / parseFloat(tile_height)));
+
+    return [num_x, num_y, tile_width, tile_height];
+}
+
+
+function draw_sv_tiles(num_x, num_y, imgsarr, cv, panoinst) {
+    var i = 0;
+    var j = 0;
+    var imgIndex = 0;
+
+    cv.uniScaleTransform = false;
+
+    for (var i = 0; i < num_x; i++) {
+        for (var j = 0; j < num_y; j++) {
+            link = "http://cbk0.google.com/cbk?output=tile&panoid=" + panoinst['Location']['panoId'] + "&zoom=" + zoom + "&x=" + i + "&y=" + j;
+            imgsarr[imgIndex] = new Image();
+            imgsarr[imgIndex].src = link;
+            imgsarr[imgIndex].onload = (function() {
+                // cont.drawImage(imgsarr[imgIndex], parseInt(Math.ceil(i * res_tile_width)), parseInt(Math.ceil(j * res_tile_height)), parseInt(Math.ceil(res_tile_width)), parseInt(Math.ceil(res_tile_height)));
+
+                var imgInstance = new fabric.Image(imgsarr[imgIndex], {
+                    left: parseInt(Math.ceil(i * res_tile_width)),
+                    top: parseInt(Math.ceil(j * res_tile_height))
+                });
+
+                imgInstance.selectable = false;
+                imgInstance.hasBorders = false;
+                imgInstance.hasControls = false;
+                imgInstance.evented = false;
+                imgInstance.scaleY = 0.35
+                imgInstance.scaleX = 0.51
+
+                // imgInstance.scaleToWidth(parseInt(Math.ceil(res_tile_width)));
+                cv.add(imgInstance);
+                cv.sendToBack(imgInstance)
+                cv.renderAll();
+            }());
+            imgIndex += 1;
+        }
+    }
+}
+
+
+$(window).load(function() {
+    prototypefabric.initCanvas();
+});
+
+canvas_1 = window._canvas = new fabric.Canvas('myCanvas');
+canvas_2 = window._canvas = new fabric.Canvas('myCanvas_1');
+canvas_3 = window._canvas = new fabric.Canvas('myCanvas_2');
+canvas_4 = window._canvas = new fabric.Canvas('myCanvas_3');
+
+var canvases = [canvas_1, canvas_2, canvas_3, canvas_4]
+var panoramas = [pano_1, pano_2, pano_3, pano_4]
+var sel_ids = [selectedObjectID_1, selectedObjectID_2, selectedObjectID_3, selectedObjectID_4]
+
+
+var prototypefabric = new function() {
+    function redraw(objects, cv)
+    {
+        objects = objects['annotations']
+        for (x in objects)
+        {
+            obj = objects[x]
+            if (obj['type']=="rect")
+            {   
+                classid= obj['class']
+                color = 'rgb(128,128,128)'
+
+                if (classid != null){
+                    color = classes_list[classid]['color']
+                }
+
+                if (obj['target'][0]['id']==treeid[0]['id'])
+                {
+                    cv.add(new fabric.Rect({
+                        top: (obj['ymin'] * mau_y),
+                        left: (obj['xmin'] * mau_x),
+                        width: (obj['xmax']-obj['xmin'])*mau_x,
+                        height: (obj['ymax']-obj['ymin'])*mau_y,
+                        opacity: 0.5,
+                        fill: color,
+                        'attribute': obj['attribute'],
+                        'classID': classid,
+                        stroke: 'purple',
+                        strokeWidth: 4
+                    }));
+                }
+                else
+                {
+                    cv.add(new fabric.Rect({
+                        top: (obj['ymin'] * mau_y),
+                        left: (obj['xmin'] * mau_x),
+                        width: (obj['xmax']-obj['xmin'])*mau_x,
+                        height: (obj['ymax']-obj['ymin'])*mau_y,
+                        opacity: 0.5,
+                        fill: color,
+                        stroke: '#333333',
+                        strokeWidth: 1,
+                        'attribute': obj['attribute'],
+                        'classID': classid
+                    }));
+
+                }
+            } 
+        }
+    }
+
+
+
+    for (i = 0; i < data.length; i++)
+    {
+        if (typeof data[i]['annotations'] != "undefined")
+        {
+            redraw(data[i],canvases[i]);
+        }
+    }
+    canvas_1.add(new fabric.Circle({
+        radius: 15,
+        fill: '#f55',
+        top: parseInt(tarp[1] * mau_y),
+        left: parseInt(tarp[0] * mau_x),
+        selectable: false,
+        opacity: 0.5
+    }));
+    canvas_2.add(new fabric.Circle({
+        radius: 15,
+        fill: '#f55',
+        top: parseInt(tarp1[1] * mau_y),
+        left: parseInt(tarp1[0] * mau_x),
+        selectable: false,
+        opacity: 0.5
+    }));
+    canvas_3.add(new fabric.Circle({
+        radius: 15,
+        fill: '#f55',
+        top: parseInt(tarp2[1] * mau_y),
+        left: parseInt(tarp2[0] * mau_x),
+        selectable: false,
+        opacity: 0.5
+    }));
+    canvas_4.add(new fabric.Circle({
+        radius: 15,
+        fill: '#f55',
+        top: parseInt(tarp3[1] * mau_y),
+        left: parseInt(tarp3[0] * mau_x),
+        selectable: false,
+        opacity: 0.5
+    }));
+
+    function rect(sy, sx) {
+        var rect2 = new fabric.Rect({
+            top: sy,
+            left: sx,
+            width: 0,
+            height: 0,
+            opacity: 0.5,
+            stroke: '#333333',
+            strokeWidth: 1,
+            fill: 'rgb(128,128,128)'
+        });
+        return rect2;
+    }
+
+    for (i = 0; i < canvases.length; i++) {
+        draw_sv_tiles(num_x, num_y, imgs, canvases[i], panoramas[i]);
+    }
+
+    this.initCanvas = function() {
+        for (i = 0; i < canvases.length; i++) {
+            draw_sv_tiles(num_x, num_y, imgs, canvases[i], panoramas[i])
+        }
+        // Canvas 1
+        canvas_1.on('object:selected', function(e) {
+            if (e.target.get('attribute') == null) {
+                $('input').keyup(function() {
+                    if ($(this).attr('id') == 'att_1')
+                        var attribute = $(this).val();
+                    canvas_1.getObjects()[selectedObjectID_1].set('attribute', attribute);
+
+                });
+            } else {
+                $("#att_1").val(e.target.get('attribute'));
+            }
+            $('#targetObject_1').click(function() {
+                canvas_1.forEachObject(function(obj) {
+                    obj.set({
+                        'target': false,
+                        stroke: '#333333',
+                        strokeWidth: 1
+                    })
+                });
+                canvas_1.getObjects()[selectedObjectID_1].set({
+                    'target': true,
+                    stroke: 'purple',
+                    strokeWidth: 4
+                });
+                canvas_1.renderAll();
+            });
+        });
+
+        canvas_1.on('mouse:up', function(e) {
+            selectedObjectID_1 = canvas_1.getObjects().indexOf(e.target)
+            canvas_1.off('mouse:move');
+        });
+
+        canvas_1.on('mouse:over', function(e) {
+            canvas_1.renderAll();
+        });
+
+        canvas_1.on('mouse:out', function(e) {
+            canvas_1.renderAll();
+
+        });
+
+        canvas_1.on('mouse:down', function(options) {
+            if (options.target && options.target.id == pointArray[0].id) {
+                prototypefabric.polygon.generatePolygon(pointArray, canvas_1);
+                selectedObjectID_1 = null;
+            }
+            if (polygonMode) {
+                prototypefabric.polygon.addPoint(options, canvas_1);
+            }
+            if (boxMode) {
+                var startY = options.e.offsetY,
+                    startX = options.e.offsetX;
+                rect2 = rect(startY, startX)
+                var attrib = 'attribute';
+                rect2.set({
+                    attrib: null,
+                    'classID': null,
+                    'target': null
+                });
+                canvas_1.add(rect2);
+
+                canvas_1.on('mouse:move', function(option) {
+                    var e = option.e;
+                    rect2.set('width', e.offsetX - startX);
+                    rect2.set('height', e.offsetY - startY);
+                    rect2.setCoords();
+                    rect2.hasRotatingPoint = false
+                });
+                boxMode = false;
+            } else {
+                selectedObjectID_1 = null;
+                $("#att_1").val("");
+            }
+
+        });
+
+        canvas_1.on('mouse:move', function(options) {
+            var object = options.target;
+            canvas_1.forEachObject(function(obj) {
+                if (activeLine && activeLine.class == "line") {
+                    if (obj.name == "Polygon") {
+                        if (obj.PolygonNumber == object.polygonNo) {
+                            var points = window["polygon" + object.polygonNo].get("points");
+
+                            var pointer = canvas_1.getPointer(options.e);
+                            activeLine.set({
+                                x2: pointer.x,
+                                y2: pointer.y
+                            });
+
+                            points[object.circleNo - 1].x = object.left;
+                            points[object.circleNo - 1].y = object.top;
+                            window["polygon" + object.polygonNo].set({
+                                points: points
+                            });
+                        }
+                    }
+                }
+            })
+            canvas_1.renderAll();
+        });
+
+        // Canvas 2
+        canvas_2.on('object:selected', function(e) {
+            if (e.target.get('attribute') == null) {
+                $('input').keyup(function() {
+                    if ($(this).attr('id') == 'att_2')
+                        var attribute = $(this).val();
+                    canvas_2.getObjects()[selectedObjectID_2].set('attribute', attribute);
+
+                });
+            } else {
+                $("#att_2").val(e.target.get('attribute'));
+            }
+            $('#targetObject_2').click(function() {
+                canvas_2.forEachObject(function(obj) {
+                    obj.set({
+                        'target': false,
+                        stroke: '#333333',
+                        strokeWidth: 1
+                    })
+                });
+                canvas_2.getObjects()[selectedObjectID_2].set({
+                    'target': true,
+                    stroke: 'purple',
+                    strokeWidth: 4
+                });
+                canvas_2.renderAll();
+            });
+
+        });
+
+        canvas_2.on('mouse:up', function(e) {
+            selectedObjectID_2 = canvas_2.getObjects().indexOf(e.target)
+            canvas_2.off('mouse:move');
+        });
+
+        canvas_2.on('mouse:over', function(e) {
+            canvas_2.renderAll();
+        });
+
+        canvas_2.on('mouse:out', function(e) {
+            canvas_2.renderAll();
+
+        });
+
+        canvas_2.on('mouse:down', function(options) {
+            if (options.target && options.target.id == pointArray[0].id) {
+                prototypefabric.polygon.generatePolygon(pointArray, canvas_2);
+                selectedObjectID_2 = null;
+            }
+            if (polygonMode) {
+                prototypefabric.polygon.addPoint(options, canvas_2);
+            }
+            if (boxMode) {
+                var startY = options.e.offsetY,
+                    startX = options.e.offsetX;
+                rect2 = rect(startY, startX)
+                var attrib = 'attribute';
+                rect2.set({
+                    attrib: null,
+                    'classID': null,
+                    'target': null
+                });
+                canvas_2.add(rect2);
+
+                canvas_2.on('mouse:move', function(option) {
+                    var e = option.e;
+                    rect2.set('width', e.offsetX - startX);
+                    rect2.set('height', e.offsetY - startY);
+                    rect2.setCoords();
+                    rect2.hasRotatingPoint = false
+                });
+                boxMode = false;
+            } else {
+                selectedObjectID_2 = null;
+                $("#att_2").val("");
+            }
+
+        });
+
+        canvas_2.on('mouse:move', function(options) {
+            var object = options.target;
+            canvas_2.forEachObject(function(obj) {
+                if (activeLine && activeLine.class == "line") {
+                    if (obj.name == "Polygon") {
+                        if (obj.PolygonNumber == object.polygonNo) {
+                            var points = window["polygon" + object.polygonNo].get("points");
+
+                            var pointer = canvas_2.getPointer(options.e);
+                            activeLine.set({
+                                x2: pointer.x,
+                                y2: pointer.y
+                            });
+
+                            points[object.circleNo - 1].x = object.left;
+                            points[object.circleNo - 1].y = object.top;
+                            window["polygon" + object.polygonNo].set({
+                                points: points
+                            });
+                        }
+                    }
+                }
+            })
+            canvas_2.renderAll();
+        });
+
+        // Canvas 3
+        canvas_3.on('object:selected', function(e) {
+            if (e.target.get('attribute') == null) {
+                $('input').keyup(function() {
+                    if ($(this).attr('id') == 'att_3')
+                        var attribute = $(this).val();
+                    canvas_3.getObjects()[selectedObjectID_3].set('attribute', attribute);
+
+                });
+            } else {
+                document.getElementById("att_3").value = e.target.get('attribute');
+            }
+            $('#targetObject_3').click(function() {
+                canvas_3.forEachObject(function(obj) {
+                    obj.set({
+                        'target': false,
+                        stroke: '#333333',
+                        strokeWidth: 1
+                        })
+                });
+                canvas_3.getObjects()[selectedObjectID_3].set({
+                    'target': true,
+                    stroke: 'purple',
+                    strokeWidth: 4
+                });
+                canvas_3.renderAll();
+            });
+        });
+
+        canvas_3.on('mouse:up', function(e) {
+            selectedObjectID_3 = canvas_3.getObjects().indexOf(e.target)
+            canvas_3.off('mouse:move');
+        });
+
+        canvas_3.on('mouse:over', function(e) {
+            canvas_3.renderAll();
+        });
+
+        canvas_3.on('mouse:out', function(e) {
+            canvas_3.renderAll();
+
+        });
+
+        canvas_3.on('mouse:down', function(options) {
+            if (options.target && options.target.id == pointArray[0].id) {
+                prototypefabric.polygon.generatePolygon(pointArray, canvas_3);
+                selectedObjectID_3 = null;
+            }
+            if (polygonMode) {
+                prototypefabric.polygon.addPoint(options, canvas_3);
+            }
+            if (boxMode) {
+                var startY = options.e.offsetY,
+                    startX = options.e.offsetX;
+                rect2 = rect(startY, startX)
+                var attrib = 'attribute';
+                rect2.set({
+                    attrib: null,
+                    'classID': null,
+                    'target': null
+                });
+                canvas_3.add(rect2);
+
+                canvas_3.on('mouse:move', function(option) {
+                    var e = option.e;
+                    rect2.set('width', e.offsetX - startX);
+                    rect2.set('height', e.offsetY - startY);
+                    rect2.setCoords();
+                    rect2.hasRotatingPoint = false
+                });
+                boxMode = false;
+            } else {
+                selectedObjectID_3 = null;
+                $("#att_3").val(e.target.get('attribute'));
+            }
+
+        });
+
+        canvas_3.on('mouse:move', function(options) {
+            var object = options.target;
+            canvas_3.forEachObject(function(obj) {
+                if (activeLine && activeLine.class == "line") {
+                    if (obj.name == "Polygon") {
+                        if (obj.PolygonNumber == object.polygonNo) {
+                            var points = window["polygon" + object.polygonNo].get("points");
+
+                            var pointer = canvas_3.getPointer(options.e);
+                            activeLine.set({
+                                x2: pointer.x,
+                                y2: pointer.y
+                            });
+
+                            points[object.circleNo - 1].x = object.left;
+                            points[object.circleNo - 1].y = object.top;
+                            window["polygon" + object.polygonNo].set({
+                                points: points
+                            });
+                        }
+                    }
+                }
+            })
+            canvas_3.renderAll();
+        });
+        // Canvas 4
+        canvas_4.on('object:selected', function(e) {
+            if (e.target.get('attribute') == null) {
+                $('input').keyup(function() {
+                    if ($(this).attr('id') == 'att_4')
+                        var att_4 = $(this).val();
+                    canvas_4.getObjects()[selectedObjectID_4].set('attribute', att_4);
+
+                });
+            } else {
+                document.getElementById("att_4").value = e.target.get('attribute');
+            }
+            $('#targetObject_4').click(function() {
+                canvas_4.forEachObject(function(obj) {
+                    obj.set({
+                        'target': false,
+                        stroke: '#333333',
+                        strokeWidth: 1
+                        })
+                });
+                canvas_4.getObjects()[selectedObjectID_4].set({
+                    'target': true,
+                    stroke: 'purple',
+                    strokeWidth: 4
+                });
+                canvas_4.renderAll();
+            });
+        });
+
+        canvas_4.on('mouse:up', function(e) {
+            selectedObjectID_4 = canvas_4.getObjects().indexOf(e.target)
+            canvas_4.off('mouse:move');
+        });
+
+        canvas_4.on('mouse:over', function(e) {
+            canvas_3.renderAll();
+        });
+
+        canvas_4.on('mouse:out', function(e) {
+            canvas_4.renderAll();
+
+        });
+
+        canvas_4.on('mouse:down', function(options) {
+            if (options.target && options.target.id == pointArray[0].id) {
+                prototypefabric.polygon.generatePolygon(pointArray, canvas_4);
+                selectedObjectID_4 = null;
+            }
+            if (polygonMode) {
+                prototypefabric.polygon.addPoint(options, canvas_4);
+            }
+            if (boxMode) {
+                var startY = options.e.offsetY,
+                    startX = options.e.offsetX;
+                rect2 = rect(startY, startX)
+                var attrib = 'attribute';
+                rect2.set({
+                    attrib: null,
+                    'classID': null,
+                    'target': null
+                });
+                canvas_4.add(rect2);
+
+                canvas_4.on('mouse:move', function(option) {
+                    var e = option.e;
+                    rect2.set('width', e.offsetX - startX);
+                    rect2.set('height', e.offsetY - startY);
+                    rect2.setCoords();
+                    rect2.hasRotatingPoint = false
+                });
+                boxMode = false;
+            } else {
+                selectedObjectID_4 = null;
+                $("#att_4").val(e.target.get('attribute'));
+            }
+
+        });
+
+        canvas_4.on('mouse:move', function(options) {
+            var object = options.target;
+            canvas_4.forEachObject(function(obj) {
+                if (activeLine && activeLine.class == "line") {
+                    if (obj.name == "Polygon") {
+                        if (obj.PolygonNumber == object.polygonNo) {
+                            var points = window["polygon" + object.polygonNo].get("points");
+
+                            var pointer = canvas_4.getPointer(options.e);
+                            activeLine.set({
+                                x2: pointer.x,
+                                y2: pointer.y
+                            });
+
+                            points[object.circleNo - 1].x = object.left;
+                            points[object.circleNo - 1].y = object.top;
+                            window["polygon" + object.polygonNo].set({
+                                points: points
+                            });
+                        }
+                    }
+                }
+            })
+            canvas_4.renderAll();
+        });
+
+    };
+};
+
+
+$().ready(function() {
+    $('.class_1_item').click(function() {
+        var value = $(this);
+        var valtext = value.text();
+        classid = parseInt(valtext.split(" ")[0]);
+        if (classid != null && selectedObjectID_1 != null) {
+            canvas_1.getObjects()[selectedObjectID_1].set({
+                'fill': classes_list[classid]['color'],
+                'stroke': '#333333',
+                'strokeWidth': 1,
+                'classID': classid
+            });
+        }
+        selectedObjectID_1 = null;
+        canvas_1.renderAll();
+    });
+    $('.class_2_item').click(function() {
+        var value = $(this);
+        var valtext = value.text();
+        classid = parseInt(valtext.split(" ")[0]);
+        if (classid != null && selectedObjectID_2 != null) {
+            canvas_2.getObjects()[selectedObjectID_2].set({
+                'fill': classes_list[classid]['color'],
+                'stroke': '#333333',
+                'strokeWidth': 1,
+                'classID': classid
+            });
+        }
+        selectedObjectID_2 = null;
+        canvas_2.renderAll();
+    });
+    $('.class_3_item').click(function() {
+        var value = $(this);
+        var valtext = value.text();
+        classid = parseInt(valtext.split(" ")[0]);
+        if (classid != null && selectedObjectID_3 != null) {
+            canvas_3.getObjects()[selectedObjectID_3].set({
+                'fill': classes_list[classid]['color'],
+                'stroke': '#333333',
+                'strokeWidth': 1,
+                'classID': classid
+            });
+        }
+        selectedObjectID_3 = null;
+        canvas_3.renderAll();
+    });
+    $('.class_4_item').click(function() {
+        var value = $(this);
+        var valtext = value.text();
+        classid = parseInt(valtext.split(" ")[0]);
+        if (classid != null && selectedObjectID_4 != null) {
+            canvas_4.getObjects()[selectedObjectID_4].set({
+                'fill': classes_list[classid]['color'],
+                'stroke': '#333333',
+                'strokeWidth': 1,
+                'classID': classid
+            });
+        }
+        selectedObjectID_4 = null;
+        canvas_4.renderAll();
+    });
+});
+
+prototypefabric.polygon = {
+    drawPolygon: function() {
+        polygonMode = true;
+        pointArray = new Array();
+        lineArray = new Array();
+        activeLine;
+    },
+    addPoint: function(options, cv) {
+        var random = Math.floor(Math.random() * (max - min + 1)) + min;
+        var id = new Date().getTime() + random;
+        var circle = new fabric.Circle({
+            radius: 4,
+            fill: '#ffffff',
+            stroke: '#333333',
+            strokeWidth: 0.5,
+            left: (options.e.layerX / cv.getZoom()),
+            top: (options.e.layerY / cv.getZoom()),
+            selectable: false,
+            hasBorders: false,
+            hasControls: false,
+            originX: 'center',
+            originY: 'center',
+            id: id,
+            objectCaching: false
+        });
+        if (pointArray.length == 0) {
+            circle.set({
+                fill: 'red'
+            })
+        }
+        var points = [(options.e.layerX / cv.getZoom()), (options.e.layerY / cv.getZoom()), (options.e.layerX / cv.getZoom()), (options.e.layerY / cv.getZoom())];
+        line = new fabric.Line(points, {
+            strokeWidth: 2,
+            fill: '#999999',
+            stroke: '#999999',
+            class: 'line',
+            originX: 'center',
+            originY: 'center',
+            selectable: false,
+            hasBorders: false,
+            hasControls: false,
+            evented: false,
+            objectCaching: false
+        });
+        if (activeShape) {
+            var pos = cv.getPointer(options.e);
+            var points = activeShape.get("points");
+            points.push({
+                x: pos.x,
+                y: pos.y
+            });
+            var polygon = new fabric.Polygon(points, {
+                stroke: '#333333',
+                strokeWidth: 1,
+                fill: '#cccccc',
+                opacity: 0.3,
+                selectable: false,
+                hasBorders: false,
+                hasControls: false,
+                evented: false,
+                objectCaching: false
+            });
+            cv.remove(activeShape);
+            cv.add(polygon);
+            activeShape = polygon;
+            cv.renderAll();
+        } else {
+            var polyPoint = [{
+                x: (options.e.layerX / cv.getZoom()),
+                y: (options.e.layerY / cv.getZoom())
+            }];
+            var polygon = new fabric.Polygon(polyPoint, {
+                stroke: '#333333',
+                strokeWidth: 1,
+                fill: '#cccccc',
+                opacity: 0.3,
+                selectable: false,
+                hasBorders: false,
+                hasControls: false,
+                evented: false,
+                objectCaching: false
+            });
+            activeShape = polygon;
+            cv.add(polygon);
+        }
+        activeLine = line;
+
+        pointArray.push(circle);
+        lineArray.push(line);
+
+        cv.add(line);
+        cv.add(circle);
+        cv.selection = false;
+    },
+    generatePolygon: function(pointArray, cv) {
+        var points = new Array();
+        $.each(pointArray, function(index, point) {
+            points.push({
+                x: point.left,
+                y: point.top
+            });
+            cv.remove(point);
+        });
+        $.each(lineArray, function(index, line) {
+            cv.remove(line);
+        });
+        cv.remove(activeShape).remove(activeLine);
+        var polygon = new fabric.Polygon(points, {
+            fill: 'rgb(128,128,128)',
+            stroke: '#333333',
+            strokeWidth: 1,
+            opacity: 0.5,
+            hasBorders: false,
+            hasControls: false
+        });
+        polygon.set({
+            'attribute': null,
+            'classID': null,
+            'target': null
+        });
+        cv.add(polygon);
+
+        activeLine = null;
+        activeShape = null;
+        polygonMode = false;
+        cv.selection = false;
+    }
+};
+
+
+
+document.getElementById("savingbutton").onclick = function() {
+
+    var pano_1_payload = []
+    var pano_2_payload = []
+    var pano_3_payload = []
+    var pano_4_payload = []
+
+    var panos_payload = [pano_1_payload,pano_2_payload,pano_3_payload,pano_4_payload]
+
+    for (i = 0; i < canvases.length; i++) {
+        canvases[i].forEachObject(function(obj) {
+            if (obj.get('type') == "rect")
+            {
+                xmin = parseInt(obj['left'] / mau_x)
+                ymin = parseInt(obj['top'] / mau_y)
+                xmax =  parseInt(obj['left'] + obj['width']) / mau_x
+                ymax = parseInt(obj['top'] + obj['height']) / mau_y
+
+                target = obj['target']
+                if (target!=null)
+                {
+                    target = treeid
+                }
+                panos_payload[i].push({'target':target,'xmin':xmin,'ymin':ymin,'xmax':xmax,'ymax':ymax,'type':'rect','class':obj['classID'],'attribute':obj['attribute']})
+
+            }
+            if (obj.get('type') == "polygon"){
+                points = []
+                p_p = obj['points']
+                for (pt in p_p)
+                {
+                    points.push([parseInt(p_p[pt]['x']/mau_x), parseInt(p_p[pt]['y']/mau_y)])
+                }
+     
+
+                target = obj['target']
+                if (target!=null)
+                {
+                    target = treeid
+                }
+                panos_payload[i].push({'target':target,'points':points,'type':'polygon','class':obj['classID'],'attribute':obj['attribute']})
+
+            }
+        })
+
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/UpdateTreeAnnotation',
+        type: 'post',
+        data: JSON.stringify([panoramas,panos_payload,treeid]),
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function(data) {
+            if (data["response"] == "success") {
+                $("#treesuccess").fadeTo(2000, 1000).slideUp(1000, function() {
+                    $("#treesuccess").slideUp(1000);
+                });
+            } else {
+                $("#treefail").fadeTo(2000, 1000).slideUp(1000, function() {
+                    $("#treefail").slideUp(1000);
+                });
+            }
+        }
+    });
+
+};
+    </script>
+
+
+
+</body>
+
+</html>
