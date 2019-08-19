@@ -1,11 +1,11 @@
 # Street View Annotation Too
-This is the official repo for Registree's Annotational Tool presented in "Name of Paper".
+This is the official repo for Registree's Annotational Tool presented in "Simultaneous multi-view instance detection with learned geometric soft-constraints".
 For the paper, and dataset check https://www.registree.ethz.ch/index.html. 
 
 ## Usage:
    1. Clone the repository 
    ```
-   git clone https://github.com/nassarofficial/RegisTree-Annotation-Tool && cd registreetool
+   git clone https://github.com/nassarofficial/registreetool && cd registreetool
    ```
    2. Install pip packages or dependencies   
    ```
@@ -27,4 +27,3 @@ To add a user to the tool, insert a document with the following json:
     "pass": "admin"
 }
  ```
-If you use the tool or its code, please cite:
