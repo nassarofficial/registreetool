@@ -70,7 +70,7 @@ Shapely==1.6.4.post1
 simplegeneric==0.8.1
 sip==4.19.8
 six==1.11.0
-tensorflow-gpu==1.4.0
+tensorflow-gpu==2.5.3
 tensorflow-tensorboard==0.4.0
 terminado==0.8.1
 testpath==0.3.1
